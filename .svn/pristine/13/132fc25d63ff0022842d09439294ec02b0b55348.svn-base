@@ -1,0 +1,13 @@
+
+#oracle
+jdbc.url = jdbc:oracle:thin:@localhost:1521:orcl
+jdbc.driver= oracle.jdbc.driver.OracleDriver
+jdbc.user = pp
+jdbc.password = admin
+
+
+redis.server=localhost
+redis.port=6379
+
+
+home.url=http://localhost:8080/offcn_p2p_action/verification/emailactivation?us=

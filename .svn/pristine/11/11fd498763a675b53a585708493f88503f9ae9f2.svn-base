@@ -1,0 +1,13 @@
+package com.offcn.dao;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.offcn.domain.City;
+
+public interface CityDao extends  JpaRepository<City, Integer> {
+public  List<City> findByParentCityAreaNumIsNull();
+
+public List<City> findByParentCityAreaNum(String parentCityAreaNum);
+}

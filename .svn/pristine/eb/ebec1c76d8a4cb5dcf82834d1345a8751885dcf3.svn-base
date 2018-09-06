@@ -1,0 +1,14 @@
+com\offcn\domain\UserModel.class
+com\offcn\domain\matchManagement\WeigthRule.class
+com\offcn\domain\City.class
+com\offcn\domain\accountLog\AccountLog.class
+com\offcn\domain\productAcount\FundingNotMatchedModel.class
+com\offcn\domain\product\Product.class
+com\offcn\domain\Bank.class
+com\offcn\domain\BankCardInfo.class
+com\offcn\domain\creditor\CreditorModel.class
+com\offcn\domain\productAcount\ExpectedReturn.class
+com\offcn\domain\UserAccountModel.class
+com\offcn\domain\product\ProductAccount.class
+com\offcn\domain\AdminBean.class
+com\offcn\domain\product\ProductEarningRate.class

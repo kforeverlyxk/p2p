@@ -1,0 +1,3 @@
+com\offcn\action\admin\AdminAction.class
+com\offcn\action\admin\ProductAction.class
+com\offcn\action\common\BaseAction.class

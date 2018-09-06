@@ -1,0 +1,147 @@
+package com.offcn.service.imp;
+
+import java.util.List;
+
+import org.apache.poi.util.SystemOutLogger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.offcn.dao.ProductDao;
+import com.offcn.dao.ProductEaringRateDao;
+import com.offcn.domain.product.Product;
+import com.offcn.domain.product.ProductEarningRate;
+import com.offcn.service.ProductService;
+import com.offcn.utils.ProductStyle;
+
+@Service
+@Transactional
+public class ProductServiceImp   implements  ProductService{
+
+	
+	    
+	         
+	 @Autowired
+	 private  ProductDao productDao;
+	 @Autowired
+	 private ProductEaringRateDao productEaringRateDao;
+	
+	public List<Product> findAll() {
+		 
+		
+		List<Product> list= productDao.findAll();
+	  this.changeStatusToChinese(list);//把数据库当中的状态吗转换成对应数据
+	  return list;
+	}
+
+	
+	private void changeStatusToChinese(List<Product> products) {
+		if (null == products)
+			return;
+		for (Product product : products) {
+			int way = product.getWayToReturnMoney();
+			// 每月部分回款
+			if (ProductStyle.REPAYMENT_WAY_MONTH_PART.equals(String.valueOf(way))) {
+				product.setWayToReturnMoneyDesc("每月部分回款");
+				// 到期一次性回款
+			} else if (ProductStyle.REPAYMENT_WAY_ONECE_DUE_DATE.equals(String.valueOf(way))) {
+				product.setWayToReturnMoneyDesc("到期一次性回款");
+			}
+
+			// 是否复投 isReaptInvest 136：是、137：否
+			// 可以复投
+			if (ProductStyle.CAN_REPEAR == product.getIsRepeatInvest()) {
+				product.setIsRepeatInvestDesc("是");
+				// 不可复投
+			} else if (ProductStyle.CAN_NOT_REPEAR == product.getIsRepeatInvest()) {
+				product.setIsRepeatInvestDesc("否");
+			}
+			// 年利率
+			if (ProductStyle.ANNUAL_RATE == product.getEarningType()) {
+				product.setEarningTypeDesc("年利率");
+				// 月利率 135
+			} else if (ProductStyle.MONTHLY_RATE == product.getEarningType()) {
+				product.setEarningTypeDesc("月利率");
+			}
+
+			if (ProductStyle.NORMAL == product.getStatus()) {
+				product.setStatusDesc("正常");
+			} else if (ProductStyle.STOP_USE == product.getStatus()) {
+				product.setStatusDesc("停用");
+			}
+
+			// 是否可转让
+			if (ProductStyle.CAN_NOT_TRNASATION == product.getIsAllowTransfer()) {
+				product.setIsAllowTransferDesc("否");
+			} else if (ProductStyle.CAN_TRNASATION == product.getIsAllowTransfer()) {
+				product.setIsAllowTransferDesc("是");
+			}
+		}
+	}
+
+
+	public Product findOne(Long  proId) {
+		      
+		return productDao.findOne(proId);
+	}
+
+
+	/*
+	 * 修改方式(non-Javadoc)
+	 * @see com.offcn.service.ProductService#update(com.offcn.domain.product.Product)
+	 */
+	public void update(Product product) {
+		
+		//先把原来的利率删除然后在进行添加
+		 List<ProductEarningRate>  pres=productEaringRateDao.findByproductId((int)product.getProId());
+		
+		 if(pres!=null && pres.size()>0){
+			//删除
+			productEaringRateDao.delete((int)product.getProId());
+		
+		}
+		productEaringRateDao.save(product.getProEarningRate());
+		
+		productDao.save(product);
+	}
+
+
+	public void delete(long proid) {
+		//根据产品的id删除对应的利率信息
+		productDao.delete(proid);
+		
+	}
+
+	
+public static void main(String[] args) {
+     String  s="hellA";
+     StringBuffer aa=new StringBuffer();
+     for(int  i=0;i<s.length();i++){
+    	  Character c=  s.charAt(i);
+    	   if(Character.isUpperCase(c)){
+    		    aa.append(Character.toLowerCase(c));
+    		   
+    	   }
+    	   else{
+    		    aa.append(Character.toUpperCase(c));
+    		   
+    	   }
+     }
+     
+     System.out.println(aa);
+
+}
+
+	public void add(Product p) {
+		//先获取到利率信息
+	List<ProductEarningRate>  list=	p.getProEarningRate();
+		if(list!=null  && list.size()>=0){
+			productEaringRateDao.save(list);
+		}
+		
+		productDao.save(p);
+	}
+	
+	
+	
+}
